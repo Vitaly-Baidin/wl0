@@ -8,15 +8,15 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type Repository struct {
+type repository struct {
 	Database *pgxpool.Pool
 }
 
-func (r *Repository) Start() {
+func (r *repository) Start() {
 	fmt.Println("Project godb started!")
 }
 
-func (r *Repository) AddOrder(ctx context.Context, order Order) {
+func (r *repository) AddOrder(ctx context.Context, order Order) {
 	_, err := r.Database.Exec(
 		ctx,
 		addOrderQuery,
@@ -30,7 +30,7 @@ func (r *Repository) AddOrder(ctx context.Context, order Order) {
 	}
 }
 
-func (r *Repository) GetAllOrders(ctx context.Context) []Order {
+func (r *repository) GetAllOrders(ctx context.Context) []Order {
 	var orders []Order
 	rows, err := r.Database.Query(ctx, getAllOrdersQuery)
 	if err == pgx.ErrNoRows {
@@ -58,7 +58,7 @@ func (r *Repository) GetAllOrders(ctx context.Context) []Order {
 	return orders
 }
 
-func (r *Repository) GetOrderByUID(ctx context.Context, uid string) *Order {
+func (r *repository) GetOrderByUID(ctx context.Context, uid string) *Order {
 	order := Order{}
 
 	err := r.Database.QueryRow(ctx, getOrderByUIDQuery, uid).

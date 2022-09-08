@@ -34,26 +34,14 @@ func main() {
 	connStan := connectStan(cfg)
 	defer connStan.Close()
 
-	cashRepository := &myCache.Repository{Database: connDB}
-	cashService := myCache.NewCacheService(*cashRepository)
+	cacheService := initCache(cfg, connDB)
 
-	c := initCache(cfg, cashService)
+	orderService := order.NewOrderService(connDB)
 
-	listener := order.Listener{
-		Repository: repository,
-	}
+	listener := order.NewOrderListener(*orderService, *cacheService)
 
 	sub, err := connStan.Subscribe("foo", listener.StartListen) // TODO вынести в отдельный сервис
 
-	//sub, err := connStan.Subscribe("foo", func(msg *stan.Msg) {
-	//	o := order.Order{}
-	//	err := json.Unmarshal(msg.Data, &o)
-	//	if err != nil {
-	//		zaplog.Logger.Errorf("invalid messege: %v\n", err)
-	//	}
-	//	c.Set("foo", o, cache.DefaultExpiration)
-	//	cashService.SaveCacheToDB("foo", o, cache.DefaultExpiration)
-	//})
 	defer sub.Unsubscribe()
 	if err != nil {
 		connStan.Close()
@@ -122,13 +110,15 @@ func connectDB(poolConfig *pgxpool.Config) *pgxpool.Pool {
 	return c
 }
 
-func initCache(cfg *viperconf.Config, service *myCache.Service) *cache.Cache {
+func initCache(cfg *viperconf.Config, database *pgxpool.Pool) *myCache.Service {
 	logger := zaplog.Logger
 	logger.Info("init cache")
 	DefaultExpiration := time.Duration(cfg.CacheConfig.DefaultExpiration) * time.Minute
 	CleanupInterval := time.Duration(cfg.CacheConfig.CleanupInterval) * time.Minute
 
 	c := cache.New(DefaultExpiration, CleanupInterval)
+	service := myCache.NewCacheService(database, c)
+
 	c.OnEvicted(func(key string, v interface{}) {
 		service.RemoveCacheFromDB(key)
 	})
@@ -143,7 +133,7 @@ func initCache(cfg *viperconf.Config, service *myCache.Service) *cache.Cache {
 	}
 	logger.Info("load cache from db OK")
 
-	return c
+	return service
 }
 
 func initMigrations(poolConfig *pgxpool.Config) {

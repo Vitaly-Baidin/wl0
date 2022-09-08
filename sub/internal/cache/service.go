@@ -2,18 +2,21 @@ package cache
 
 import (
 	"context"
-	"github.com/Vitaly-Baidin/l0/sub/internal/order"
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/patrickmn/go-cache"
 	"time"
 )
 
 type Service struct {
-	repository Repository
+	repository *repository
+	Cache      *cache.Cache
 }
 
-func NewCacheService(repository Repository) *Service {
-	Repository{}
+func NewCacheService(database *pgxpool.Pool, cache *cache.Cache) *Service {
+	repository := repository{database}
 	return &Service{
-		repository: repository,
+		repository: &repository,
+		Cache:      cache,
 	}
 }
 
@@ -21,13 +24,14 @@ func (s *Service) GetAllCacheFromDB() []Cache {
 	return s.repository.GetAllCache(context.Background())
 }
 
-func (s *Service) SaveCacheToDB(key string, value order.Order, duration time.Duration) {
-	cache := Cache{
+func (s *Service) SaveCache(key string, value any, duration time.Duration) {
+	s.Cache.Set(key, value, duration)
+	c := Cache{
 		Key:        key,
 		Value:      value,
 		Expiration: duration,
 	}
-	s.repository.AddCache(context.Background(), cache)
+	s.repository.AddCache(context.Background(), c)
 }
 
 func (s *Service) RemoveCacheFromDB(key string) {

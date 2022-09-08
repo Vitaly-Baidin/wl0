@@ -7,11 +7,11 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type Repository struct {
+type repository struct {
 	Database *pgxpool.Pool
 }
 
-func (r *Repository) AddCache(ctx context.Context, cache Cache) {
+func (r *repository) AddCache(ctx context.Context, cache Cache) {
 	_, err := r.Database.Exec(ctx, addCacheQuery,
 		cache.Key, cache.Value, cache.Expiration)
 	if err != nil {
@@ -19,7 +19,7 @@ func (r *Repository) AddCache(ctx context.Context, cache Cache) {
 	}
 }
 
-func (r *Repository) GetAllCache(ctx context.Context) []Cache {
+func (r *repository) GetAllCache(ctx context.Context) []Cache {
 	var caches []Cache
 	rows, err := r.Database.Query(ctx, getAllCacheQuery)
 	if err == pgx.ErrNoRows {
@@ -44,7 +44,7 @@ func (r *Repository) GetAllCache(ctx context.Context) []Cache {
 	return caches
 }
 
-func (r *Repository) removeCache(ctx context.Context, key string) {
+func (r *repository) removeCache(ctx context.Context, key string) {
 	_, err := r.Database.Exec(ctx, deleteCacheByKeyQuery, key)
 	if err != nil {
 		zaplog.Logger.Errorf("failed to delete cache: %v\n", err)
