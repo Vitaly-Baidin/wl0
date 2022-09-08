@@ -72,7 +72,9 @@ func convertJsonToOrder(value any) (*domain.Order, error) {
 
 const (
 	addCacheQuery = `INSERT INTO caches (Key, Value, Expiration)
-					 VALUES ($1, $2, $3)`
+					 VALUES ($1, $2, $3)
+					 ON CONFLICT (Key)
+					 DO UPDATE SET value = Excluded.Value, expiration = Excluded.Expiration;`
 	getAllCacheQuery      = `SELECT Key, Value, Expiration FROM caches;`
 	deleteCacheByKeyQuery = "DELETE FROM caches WHERE Key = $1;"
 )

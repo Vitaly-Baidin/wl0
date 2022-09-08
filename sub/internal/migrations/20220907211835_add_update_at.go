@@ -49,8 +49,7 @@ const queryUp = `CREATE TABLE orders
 );
 CREATE TABLE caches
 (
-    id         serial PRIMARY KEY,
-    key        VARCHAR(250) UNIQUE NOT NULL,
+    key        VARCHAR(250) UNIQUE NOT NULL PRIMARY KEY,
     value      jsonb,
     expiration bigint
 );`
