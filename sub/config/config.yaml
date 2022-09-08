@@ -1,3 +1,6 @@
+server:
+  host: localhost
+  port: 8090
 database:
   username: root
   password: rootroot
@@ -7,6 +10,7 @@ database:
   timeout: 5
 
 cache:
+  enabled: true
   default_expiration: 5
   cleanup_interval: 10
 

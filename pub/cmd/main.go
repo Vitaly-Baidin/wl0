@@ -18,13 +18,12 @@ func main() {
 
 	model, err := os.ReadFile("model.json")
 	if err != nil {
-		logger.Errorf("failed to read file: %v\n", err)
-		return
+		logger.Fatalf("failed to read file: %v\n", err)
 	}
 	conn := connectStan(cfg)
 
-	if err := conn.Publish("foo", model); err != nil {
-		logger.Errorf("failed to publish message: %v\n", err)
+	if err := conn.Publish("order.message", model); err != nil {
+		logger.Fatalf("failed to publish message: %v\n", err)
 	}
 
 	err = conn.Close()

@@ -26,8 +26,8 @@ func NewPoolConfig(cfg *viperconf.Config) (*pgxpool.Config, error) {
 	return poolConfig, nil
 }
 
-func NewConnection(poolConfig *pgxpool.Config) (*pgxpool.Pool, error) {
-	conn, err := pgxpool.ConnectConfig(context.Background(), poolConfig)
+func NewConnection(poolConfig *pgxpool.Config, ctx context.Context) (*pgxpool.Pool, error) {
+	conn, err := pgxpool.ConnectConfig(ctx, poolConfig)
 	if err != nil {
 		return nil, err
 	}

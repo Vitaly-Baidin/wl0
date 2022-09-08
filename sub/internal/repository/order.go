@@ -1,22 +1,22 @@
-package order
+package repository
 
 import (
 	"context"
 	"fmt"
 	"github.com/Vitaly-Baidin/l0/pkg/logging/zaplog"
-	"github.com/jackc/pgx/v4"
+	"github.com/Vitaly-Baidin/l0/sub/internal/domain"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type repository struct {
+type OrderRepository struct {
 	Database *pgxpool.Pool
 }
 
-func (r *repository) Start() {
+func (r *OrderRepository) Start() {
 	fmt.Println("Project godb started!")
 }
 
-func (r *repository) AddOrder(ctx context.Context, order Order) {
+func (r *OrderRepository) AddOrder(ctx context.Context, order domain.Order) error {
 	_, err := r.Database.Exec(
 		ctx,
 		addOrderQuery,
@@ -26,40 +26,37 @@ func (r *repository) AddOrder(ctx context.Context, order Order) {
 		order.InternalSignature, order.CustomerID, order.DeliveryService,
 		order.Shardkey, order.SmID, order.DateCreated, order.OofShard)
 	if err != nil {
-		zaplog.Logger.Errorf("failed to create order by uid(%s): %v\n", order.OrderUID, err)
+		return err
 	}
+	return nil
 }
 
-func (r *repository) GetAllOrders(ctx context.Context) []Order {
-	var orders []Order
+func (r *OrderRepository) GetAllOrders(ctx context.Context) ([]domain.Order, error) {
+	var orders []domain.Order
 	rows, err := r.Database.Query(ctx, getAllOrdersQuery)
-	if err == pgx.ErrNoRows {
-		zaplog.Logger.Info("No rows")
-		return []Order{}
-	} else if err != nil {
+	if err != nil {
 		zaplog.Logger.Errorf("failed to all found orders: %v\n", err)
-		return []Order{}
+		return nil, err
 	}
 	defer rows.Close()
+
 	for rows.Next() {
-		order := Order{}
-		rows.Scan(&order.OrderUID, &order.TrackNumber, &order.Entry, &order.DeliveryData,
+		order := domain.Order{}
+		err = rows.Scan(&order.OrderUID, &order.TrackNumber, &order.Entry, &order.DeliveryData,
 			&order.PaymentData, &order.ItemsData, &order.Locale,
 			&order.InternalSignature, &order.CustomerID, &order.DeliveryService,
 			&order.Shardkey, &order.SmID, &order.DateCreated, &order.OofShard)
+		if err != nil {
+			return nil, err
+		}
 		orders = append(orders, order)
 	}
 
-	if rows.Err() != nil {
-		zaplog.Logger.Errorf("failed to find all orders: %v\n", err)
-		return []Order{}
-	}
-
-	return orders
+	return orders, nil
 }
 
-func (r *repository) GetOrderByUID(ctx context.Context, uid string) *Order {
-	order := Order{}
+func (r *OrderRepository) GetOrderByUID(ctx context.Context, uid string) (*domain.Order, error) {
+	order := domain.Order{}
 
 	err := r.Database.QueryRow(ctx, getOrderByUIDQuery, uid).
 		Scan(&order.OrderUID, &order.TrackNumber, &order.Entry, &order.DeliveryData,
@@ -67,11 +64,10 @@ func (r *repository) GetOrderByUID(ctx context.Context, uid string) *Order {
 			&order.InternalSignature, &order.CustomerID, &order.DeliveryService,
 			&order.Shardkey, &order.SmID, &order.DateCreated, &order.OofShard)
 	if err != nil {
-		zaplog.Logger.Errorf("failed to find order by uid(%s): %v\n", uid, err)
-		return &Order{}
+		return nil, err
 	}
 
-	return &order
+	return &order, nil
 }
 
 const (

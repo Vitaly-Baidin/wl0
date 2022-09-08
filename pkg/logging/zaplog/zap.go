@@ -16,7 +16,7 @@ func InitializeLogger(path ...string) {
 	fp := filepath.Join(path...)
 
 	allWriter := createWriter(fp, "/all.log")
-	errorWriter := createWriter(fp, "/error.log")
+	errorWriter := createWriter(fp, "/httpErr.log")
 
 	core := zapcore.NewTee(
 		zapcore.NewCore(fileEncoder, allWriter, zapcore.DebugLevel),
@@ -42,12 +42,12 @@ func createFileEncode() zapcore.Encoder {
 func createWriter(folder, file string) zapcore.WriteSyncer {
 	err := os.MkdirAll(folder, os.ModePerm)
 	if err != nil {
-		log.Fatalf("failed to create folder %s", err.Error())
+		log.Fatalf("failed to create folder: %s\n", err)
 	}
 
 	logFile, err := os.OpenFile(folder+file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatalf("failed to create folder %s\n", err.Error())
+		log.Fatalf("failed to open folder: %s\n", err)
 	}
 
 	return zapcore.AddSync(logFile)

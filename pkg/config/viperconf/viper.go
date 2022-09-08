@@ -14,7 +14,8 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port string `mapstructure:"port"`
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
 }
 
 type DatabaseConfig struct {
@@ -27,8 +28,8 @@ type DatabaseConfig struct {
 }
 
 type CacheConfig struct {
-	DefaultExpiration int32 `mapstructure:"default_expiration"`
-	CleanupInterval   int32 `mapstructure:"cleanup_interval"`
+	DefaultExpiration int `mapstructure:"default_expiration"`
+	CleanupInterval   int `mapstructure:"cleanup_interval"`
 }
 
 type StanConfig struct {
@@ -58,7 +59,7 @@ func LoadConfig(path string) (config Config, err error) {
 }
 
 func serverDefault() {
-	viper.SetDefault("server.port", "8080")
+	viper.SetDefault("server.port", 8080)
 }
 
 func cacheDefault() {
