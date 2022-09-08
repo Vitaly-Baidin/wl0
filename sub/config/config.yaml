@@ -1,0 +1,15 @@
+database:
+  username: root
+  password: rootroot
+  host: 127.0.0.1
+  port: 54320
+  db_name: orders
+  timeout: 5
+
+cache:
+  default_expiration: 5
+  cleanup_interval: 10
+
+stan:
+  cluster_id: test-cluster
+  client_id: sub-client

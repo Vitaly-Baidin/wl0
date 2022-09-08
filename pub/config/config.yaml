@@ -1,0 +1,3 @@
+stan:
+  cluster_id: test-cluster
+  client_id: pub-client
