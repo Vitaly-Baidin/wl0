@@ -43,7 +43,7 @@ func (r *CacheRepository) GetAllCache(ctx context.Context) ([]domain.Cache, erro
 
 		caches = append(caches, cache)
 	}
-	if rows.Err() != nil {
+	if len(caches) == 0 {
 		return nil, pgx.ErrNoRows
 	}
 	return caches, nil

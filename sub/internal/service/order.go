@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/Vitaly-Baidin/l0/pkg/logging/zaplog"
 	"github.com/Vitaly-Baidin/l0/sub/internal/domain"
 	"github.com/Vitaly-Baidin/l0/sub/internal/repository"
 	"github.com/jackc/pgx/v4"
@@ -46,6 +47,7 @@ func (s *OrderService) GetAllOrders() ([]domain.Order, error) {
 func (s *OrderService) GetOrderByUID(uid string) (*domain.Order, error) {
 	value, found := s.cacheService.Cache.Get(uid)
 	if found {
+		zaplog.Logger.Infof("get value uid(%s) from cache", uid)
 		return value.(*domain.Order), nil
 	}
 	order, err := s.repository.GetOrderByUID(s.Context, uid)
@@ -59,5 +61,6 @@ func (s *OrderService) GetOrderByUID(uid string) (*domain.Order, error) {
 	if err != nil {
 		return nil, err
 	}
+	zaplog.Logger.Infof("get value uid(%s) from db", uid)
 	return order, nil
 }
