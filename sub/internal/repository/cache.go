@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/Vitaly-Baidin/l0/sub/internal/domain"
+	"github.com/Vitaly-Baidin/l0/sub/internal/util"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -36,7 +36,7 @@ func (r *CacheRepository) GetAllCache(ctx context.Context) ([]domain.Cache, erro
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert from db: %v\n", err)
 		}
-		cache.Value, err = convertJsonToOrder(cache.Value)
+		cache.Value, err = util.ConvertJsonToOrder(cache.Value)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert from db: %v\n", err)
 		}
@@ -55,19 +55,6 @@ func (r *CacheRepository) RemoveCache(ctx context.Context, key string) error {
 		return fmt.Errorf("failed to delete cache in db: %v\n", err)
 	}
 	return nil
-}
-
-func convertJsonToOrder(value any) (*domain.Order, error) {
-	orderType, err := json.Marshal(value)
-	if err != nil {
-		return nil, err
-	}
-	var o domain.Order
-	err = json.Unmarshal(orderType, &o)
-	if err != nil {
-		return nil, err
-	}
-	return &o, nil
 }
 
 const (

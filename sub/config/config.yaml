@@ -4,7 +4,7 @@ server:
 database:
   username: root
   password: rootroot
-  host: 127.0.0.1
+  host: localhost
   port: 54320
   db_name: orders
   timeout: 5

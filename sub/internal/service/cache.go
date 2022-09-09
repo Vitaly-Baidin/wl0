@@ -35,7 +35,7 @@ func (s *CacheService) GetAllCacheFromDB() ([]domain.Cache, error) {
 	return s.repository.GetAllCache(s.Context)
 }
 
-func (s *CacheService) SaveCache(key string, value any) error {
+func (s *CacheService) SaveCache(key string, value domain.Order) error {
 	s.Cache.Set(key, value, cache.DefaultExpiration)
 
 	expiration := time.Duration(s.Context.Value("cache.expiration").(int))

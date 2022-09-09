@@ -6,6 +6,7 @@ import (
 	"github.com/Vitaly-Baidin/l0/pkg/logging/zaplog"
 	"github.com/Vitaly-Baidin/l0/sub/internal/domain"
 	"github.com/Vitaly-Baidin/l0/sub/internal/repository"
+	"github.com/Vitaly-Baidin/l0/sub/internal/util"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -48,7 +49,11 @@ func (s *OrderService) GetOrderByUID(uid string) (*domain.Order, error) {
 	value, found := s.cacheService.Cache.Get(uid)
 	if found {
 		zaplog.Logger.Infof("get value uid(%s) from cache", uid)
-		return value.(*domain.Order), nil
+		order, err := util.ConvertJsonToOrder(value)
+		if err != nil {
+			return nil, err
+		}
+		return order, nil
 	}
 	order, err := s.repository.GetOrderByUID(s.Context, uid)
 	if err == pgx.ErrNoRows {
@@ -57,7 +62,7 @@ func (s *OrderService) GetOrderByUID(uid string) (*domain.Order, error) {
 		return nil, err
 	}
 
-	err = s.cacheService.SaveCache(uid, order)
+	err = s.cacheService.SaveCache(uid, *order)
 	if err != nil {
 		return nil, err
 	}
