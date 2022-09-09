@@ -3,14 +3,17 @@ module github.com/Vitaly-Baidin/l0
 go 1.19
 
 require (
+	github.com/driftprogramming/pgxpoolmock v1.1.0
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/render v1.0.2
+	github.com/golang/mock v1.6.0
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/lib/pq v1.10.6
 	github.com/nats-io/stan.go v0.10.3
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pressly/goose/v3 v3.7.0
 	github.com/spf13/viper v1.13.0
+	github.com/stretchr/testify v1.8.0
 	go.uber.org/zap v1.23.0
 )
 
@@ -42,8 +45,6 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/objx v0.4.0 // indirect
-	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect

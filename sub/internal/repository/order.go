@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"github.com/Vitaly-Baidin/l0/pkg/logging/zaplog"
 	"github.com/Vitaly-Baidin/l0/sub/internal/domain"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -10,10 +9,6 @@ import (
 
 type OrderRepository struct {
 	Database *pgxpool.Pool
-}
-
-func (r *OrderRepository) Start() {
-	fmt.Println("Project godb started!")
 }
 
 func (r *OrderRepository) AddOrder(ctx context.Context, order domain.Order) error {
