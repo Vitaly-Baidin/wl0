@@ -36,7 +36,11 @@ func (r *CacheRepository) GetAllCache(ctx context.Context) ([]domain.Cache, erro
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert from db: %v\n", err)
 		}
-		cache.Value, err = util.ConvertJsonToOrder(cache.Value)
+		order, err := util.ConvertJsonToOrder(cache.Value)
+		if err != nil {
+			return nil, err
+		}
+		cache.Value = order
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert from db: %v\n", err)
 		}
@@ -61,7 +65,7 @@ const (
 	addCacheQuery = `INSERT INTO caches (Key, Value, Expiration)
 					 VALUES ($1, $2, $3)
 					 ON CONFLICT (Key)
-					 DO UPDATE SET value = Excluded.Value, expiration = Excluded.Expiration;`
+					 DO UPDATE SET value = EXCLUDED.Value, expiration = EXCLUDED.Expiration;`
 	getAllCacheQuery      = `SELECT Key, Value, Expiration FROM caches;`
 	deleteCacheByKeyQuery = "DELETE FROM caches WHERE Key = $1;"
 )

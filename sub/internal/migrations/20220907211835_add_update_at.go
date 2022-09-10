@@ -51,7 +51,7 @@ CREATE TABLE caches
 (
     key        VARCHAR(250) UNIQUE NOT NULL PRIMARY KEY,
     value      jsonb,
-    expiration bigint
+    expiration int
 );`
 
 const queryDown = `DROP TABLE orders; DROP TABLE caches`

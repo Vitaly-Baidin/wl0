@@ -28,10 +28,14 @@ func (l *listener) StartListen(msg *stan.Msg) {
 		zaplog.Logger.Errorf("invalid messege: %v\n", err)
 		return
 	}
-	err = l.cacheService.SaveCache(o.OrderUID, o)
+	err = l.cacheService.SaveCache(*o.OrderUID, o)
 	if err != nil {
 		zaplog.Logger.Errorf("failed save to cache: %v\n", err)
 		return
 	}
-	l.orderService.AddOrder(o)
+	err = l.orderService.AddOrder(o)
+	if err != nil {
+		zaplog.Logger.Errorf("failed add order to db: %v\n", err)
+		return
+	}
 }

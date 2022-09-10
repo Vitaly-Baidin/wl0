@@ -3,10 +3,8 @@ module github.com/Vitaly-Baidin/l0
 go 1.19
 
 require (
-	github.com/driftprogramming/pgxpoolmock v1.1.0
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/render v1.0.2
-	github.com/golang/mock v1.6.0
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/lib/pq v1.10.6
 	github.com/nats-io/stan.go v0.10.3
