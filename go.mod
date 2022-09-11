@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/render v1.0.2
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/lib/pq v1.10.6
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nats-io/stan.go v0.10.3
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pressly/goose/v3 v3.7.0
@@ -30,7 +31,6 @@ require (
 	github.com/jackc/pgtype v1.12.0 // indirect
 	github.com/jackc/puddle v1.3.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.8.4 // indirect
 	github.com/nats-io/nats-streaming-server v0.24.6 // indirect
 	github.com/nats-io/nats.go v1.16.0 // indirect

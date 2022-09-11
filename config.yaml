@@ -1,0 +1,20 @@
+server:
+  host: localhost
+  port: 8090
+database:
+  username: root
+  password: rootroot
+  host: localhost
+  port: 54320
+  db_name: orders
+  timeout: 5
+  max_connect: 10
+
+cache:
+  enabled: true
+  default_expiration: 5
+  cleanup_interval: 10
+
+stan:
+  cluster_id: test-cluster
+  client_id: sub-client
