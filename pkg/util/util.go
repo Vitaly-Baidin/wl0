@@ -20,7 +20,6 @@ func ConvertJsonToOrder(value any) (o *entity.Order, err error) {
 	} else if valueType == reflect.Slice {
 		err = json.Unmarshal(value.([]byte), &o)
 	} else {
-		fmt.Println(valueType)
 		valueByte, err := json.Marshal(value)
 		if err != nil {
 			return nil, fmt.Errorf("invalid message(order): %v", err)
@@ -32,7 +31,7 @@ func ConvertJsonToOrder(value any) (o *entity.Order, err error) {
 		}
 	}
 
-	if o.OrderUID == nil {
+	if o.OrderUID == nil || *o.OrderUID == "" {
 		return nil, fmt.Errorf("field [order_uid] don't must be empty")
 	}
 
